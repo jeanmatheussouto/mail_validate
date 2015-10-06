@@ -5,23 +5,24 @@ from flanker.addresslib import address
 print "Validate Emails"
 print "--------------------"
 
-f = open(sys.argv[1], 'rb')
+f = open(sys.argv[1], 'rU')
 
-mailCount = 0
+mails = []
 invalidMails = []
 try:
     reader = csv.DictReader(f, delimiter=',')
     for row in reader:
-        mailCount += 1
-        mailValid = address.validate_address(row['email'])
-        if mailValid is None:
-            invalidMails.append(row['email'])
-            print "Invalid: {0} - Mail: {1}".format(mailValid is None, row['email'])
+        mails.append(row['email'])
+
+    print "Validando emails"
+
+    result = address.validate_list(mails, as_tuple=True)
 
     print "--------------------"
-    print "Mail Count: ", mailCount
-    print "Invalid Mail Count: ", len(invalidMails)
+    print "Mail Count: ", len(mails)
+    print "Invalid Mail Count: ", len(result[1])
+    print "--------------------"
 
-    print "Percentage of mails invalid: {:.1%}".format(float(len(invalidMails)) / float(mailCount))
+    print "Percentage of mails invalid: {:.1%}".format(float(len(result[1])) / float(len(mails)))
 finally:
     f.close()
