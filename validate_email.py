@@ -7,22 +7,26 @@ print "--------------------"
 
 f = open(sys.argv[1], 'rU')
 
-mails = []
-invalidMails = []
+total = 0
+valid = 0
+invalid = 0
 try:
+    print "Validando emails"
     reader = csv.DictReader(f, delimiter=',')
     for row in reader:
-        mails.append(row['email'])
-
-    print "Validando emails"
-
-    result = address.validate_list(mails, as_tuple=True)
+        total += 1
+        email = row['email']
+        if address.validate_address(email):
+            valid += 1
+        else:
+            invalid += 1
 
     print "--------------------"
-    print "Mail Count: ", len(mails)
-    print "Invalid Mail Count: ", len(result[1])
+    print "Mail Count: ", total
+    print "Invalid Mail Count: ", invalid
     print "--------------------"
 
-    print "Percentage of mails invalid: {:.1%}".format(float(len(result[1])) / float(len(mails)))
+    print "Percentage of mails invalid: {:.1%}".format(float(invalid) /
+                                                       float(total))
 finally:
     f.close()
